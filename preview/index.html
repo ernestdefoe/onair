@@ -227,7 +227,7 @@
       <div class="provtabs">
         <button class="on" data-prov="twitch" onclick="setProv(this,'twitch')"><i class="fa-brands fa-twitch"></i> Twitch</button>
         <button data-prov="youtube" onclick="setProv(this,'youtube')"><i class="fa-brands fa-youtube"></i> YouTube</button>
-        <button class="pro-only" data-prov="rtmp" onclick="setProv(this,'rtmp')"><i class="fa-solid fa-tower-broadcast"></i> OnAir RTMP <span style="font-size:9px;background:var(--pro);color:#fff;padding:1px 5px;border-radius:4px;margin-left:2px">PRO</span></button>
+        <button class="pro-only" data-prov="rtmp" onclick="setProv(this,'rtmp')"><i class="fa-solid fa-tower-broadcast"></i> OnAir+ RTMP <span style="font-size:9px;background:var(--pro);color:#fff;padding:1px 5px;border-radius:4px;margin-left:2px">PRO</span></button>
         <span class="lock"><i class="fa-solid fa-lock"></i> RTMP + HLS in Pro</span>
       </div>
       <div class="viewer">
@@ -427,7 +427,7 @@
   const provName = {
     twitch:'<i class="fa-brands fa-twitch fa-twitch"></i> embedded from Twitch',
     youtube:'<i class="fa-brands fa-youtube fa-youtube"></i> embedded from YouTube',
-    rtmp:'<i class="fa-solid fa-tower-broadcast" style="color:#7b5cff"></i> OnAir RTMP · HLS · low latency'
+    rtmp:'<i class="fa-solid fa-tower-broadcast" style="color:#7b5cff"></i> OnAir+ RTMP · HLS · low latency'
   };
   function setProv(btn,p){
     document.querySelectorAll('.provtabs button').forEach(b=>b.classList.remove('on'));

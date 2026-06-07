@@ -5,7 +5,7 @@ namespace Ernestdefoe\OnAir\Provider;
 /**
  * A source a member can go live from. Lite ships YouTube + Twitch.
  *
- * OnAir Pro registers additional providers (e.g. the built-in RTMP/HLS pipeline,
+ * OnAir+ registers additional providers (e.g. the built-in RTMP/HLS pipeline,
  * whether self-hosted or via a managed ingest API) through the same interface —
  * bind another implementation in a ServiceProvider and tag it 'onair.providers'.
  */

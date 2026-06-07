@@ -3,6 +3,10 @@ onair:
   lib:
     live: LIVE
     live_now: Live now
+    # API validation messages (translated server-side)
+    errors:
+      url_required: Paste your YouTube or Twitch stream URL.
+      no_provider: That URL isn't a YouTube or Twitch link OnAir recognises.
 
   forum:
     nav:

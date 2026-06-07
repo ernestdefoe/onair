@@ -13,7 +13,7 @@ Concept render: [`preview/index.html`](preview/index.html) — open in any brows
 | Package | License | Packagist id | Depends on |
 |---|---|---|---|
 | **OnAir** (Lite) | Free / MIT | `ernestdefoe/onair` | core only |
-| **OnAir Pro** | Proprietary | `ernestdefoe/onair-pro` | `ernestdefoe/onair` |
+| **OnAir+** | Proprietary | `ernestdefoe/onair-pro` | `ernestdefoe/onair` |
 
 Pro is an **add‑on**, not a fork — same pattern as `bespoke` + `theme-toggle` and the
 `page-builder` premium model. Lite ships everything below in *Core* + *Lite*; Pro

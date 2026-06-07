@@ -17,7 +17,7 @@
     },
     "suggest": {
         "flarum/realtime": "^1.0 — enables instant LIVE-badge push; OnAir transparently falls back to polling without it.",
-        "ernestdefoe/onair-pro": "Pro add-on — built-in RTMP server (self-hosted or managed ingest), HLS playback, multistream, VOD, live chat and notifications."
+        "ernestdefoe/onair-pro": "OnAir+ add-on — built-in RTMP server (self-hosted or managed ingest), HLS playback, multistream, VOD, live chat and notifications."
     },
     "autoload": {
         "psr-4": {

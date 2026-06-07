@@ -63,7 +63,7 @@ class ProviderManager
 
         if (! $provider) {
             throw new ValidationException([
-                'channel_url' => 'No OnAir provider recognises that URL. Paste a YouTube or Twitch link.',
+                'channel_url' => resolve(\Flarum\Locale\TranslatorInterface::class)->trans('onair.lib.errors.no_provider'),
             ]);
         }
 

@@ -133,7 +133,7 @@ class StreamResource extends AbstractDatabaseResource
         $url = trim($body['data']['attributes']['channelUrl'] ?? '');
 
         if ($url === '') {
-            throw new ValidationException(['channelUrl' => 'Paste your YouTube or Twitch stream URL.']);
+            throw new ValidationException(['channelUrl' => resolve(\Flarum\Locale\TranslatorInterface::class)->trans('onair.lib.errors.url_required')]);
         }
 
         // Resolve provider + embed details (throws if unrecognised).
