@@ -413,7 +413,7 @@
 <div class="foot">
   <b>How it's built (Flarum 2):</b> the LIVE badge overrides the shared <code>Avatar</code> component (main-bundle → safe to extend at init) and reads a serializer-supplied <code>user.isLive()</code>.
   Presence runs through <code>app.onair.presence</code>, which picks <code>RealtimeTransport</code> when <code>flarum/realtime</code> is detected and falls back to <code>PollingTransport</code> (<code>GET /api/onair/live</code>) otherwise.
-  Pro is a separate proprietary package (<code>ernestdefoe/onair-pro</code>) that requires the free <code>ernestdefoe/onair</code> and plugs the RTMP/HLS pipeline into Lite's provider registry. See <code>ROADMAP.md</code>.
+  Pro is a separate proprietary package (<code>ernestdefoe/onair-plus</code>) that requires the free <code>ernestdefoe/onair</code> and plugs the RTMP/HLS pipeline into Lite's provider registry. See <code>ROADMAP.md</code>.
 </div>
 
 <script>

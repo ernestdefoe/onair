@@ -72,7 +72,7 @@ composer require ernestdefoe/onair
 
 Then enable **OnAir** in the admin panel. Optionally install `flarum/realtime` for
 instant (push) LIVE badges — OnAir detects it automatically. For self‑hosted streaming,
-add **OnAir+** (`composer require ernestdefoe/onair-pro`).
+add **OnAir+** (`composer require ernestdefoe/onair-plus`).
 
 ## Development
 
