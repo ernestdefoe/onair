@@ -87,6 +87,7 @@ class StreamResource extends AbstractDatabaseResource
 
             Schema\Str::make('title')
                 ->writable()
+                ->nullable()
                 ->maxLength(120)
                 ->set(fn (Stream $s, $value) => $s->title = $value ? trim($value) : null),
 

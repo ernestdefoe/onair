@@ -80,9 +80,15 @@ export default class GoLiveModal extends FormModal {
     e.preventDefault();
     this.loading = true;
 
+    // No `provider` — it isn't writable; the server resolves it from the URL.
+    // Only include `title` when non-empty (the field rejects null).
+    const attributes = { channelUrl: this.url.trim() };
+    const title = this.streamTitle.trim();
+    if (title) attributes.title = title;
+
     app.store
       .createRecord('onair-streams')
-      .save({ channelUrl: this.url.trim(), title: this.streamTitle.trim() || null, provider: this.provider })
+      .save(attributes)
       .then(() => {
         app.alerts.show({ type: 'success' }, app.translator.trans('onair.forum.go_live.success'));
         if (app.onair && app.onair.presence) app.onair.presence.refresh();
