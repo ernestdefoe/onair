@@ -1,0 +1,43 @@
+{
+    "name": "ernestdefoe/onair",
+    "description": "Live streaming for Flarum 2 — members go live via YouTube or Twitch, with a LIVE badge that follows their avatar everywhere.",
+    "type": "flarum-extension",
+    "keywords": ["flarum", "live", "stream", "streaming", "youtube", "twitch", "broadcast"],
+    "homepage": "https://github.com/ernestdefoe/onair",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ernestdefoe",
+            "email": "ernestdefoe@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0"
+    },
+    "suggest": {
+        "flarum/realtime": "^1.0 — enables instant LIVE-badge push; OnAir transparently falls back to polling without it.",
+        "ernestdefoe/onair-pro": "Pro add-on — built-in RTMP server (self-hosted or managed ingest), HLS playback, multistream, VOD, live chat and notifications."
+    },
+    "autoload": {
+        "psr-4": {
+            "Ernestdefoe\\OnAir\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "OnAir",
+            "category": "feature",
+            "icon": {
+                "name": "fa-solid fa-tower-broadcast",
+                "backgroundColor": "#ff1f4b",
+                "color": "#fff"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

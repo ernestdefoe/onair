@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OnAir — Live Streaming for Flarum 2 (concept render)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --live:        #ff1f4b;   /* on-air red */
+    --live-dark:   #d2113a;
+    --live-glow:   rgba(255,31,75,0.45);
+    --pro:         #7b5cff;   /* pro accent */
+    --pro-dark:    #5e3fe0;
+    --bg:          #f3f4f8;
+    --surface:     #ffffff;
+    --surface-2:   #f7f8fb;
+    --studio:      #14151c;   /* dark control surface */
+    --studio-2:    #1d1f2a;
+    --border:      rgba(20,21,28,0.08);
+    --border-2:    rgba(20,21,28,0.13);
+    --text:        #21222b;
+    --muted:       #8a8c9b;
+    --secondary:   #5e616f;
+    --online:      #38c172;
+    --radius:      14px;
+    --radius-sm:   9px;
+    --shadow-sm:   0 2px 8px rgba(20,21,28,0.06), 0 1px 3px rgba(20,21,28,0.04);
+    --shadow-md:   0 6px 22px rgba(20,21,28,0.10), 0 2px 6px rgba(20,21,28,0.05);
+    --shadow-lg:   0 14px 44px rgba(20,21,28,0.16);
+    --transition:  0.16s ease;
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px; line-height: 1.5; min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+
+  /* ─────────── concept ribbon ─────────── */
+  .ribbon {
+    background: linear-gradient(90deg, var(--studio), var(--studio-2));
+    color: #fff; text-align: center; font-size: 12.5px; letter-spacing: .3px;
+    padding: 7px 16px;
+  }
+  .ribbon b { color: #ff7d9b; }
+
+  /* ─────────── header ─────────── */
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
+  .header-inner { max-width: 1240px; margin: 0 auto; padding: 0 22px; display: flex; align-items: center; height: 60px; gap: 18px; }
+  .logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 19px; }
+  .logo .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 0 var(--live-glow); animation: pulse 1.8s infinite; }
+  .logo small { font-weight: 600; font-size: 10px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; align-self: flex-start; margin-top: 2px; }
+  .nav { display: flex; gap: 4px; margin-left: 10px; }
+  .nav a { padding: 7px 12px; border-radius: 8px; font-weight: 500; font-size: 14px; color: var(--secondary); }
+  .nav a.active, .nav a:hover { background: var(--surface-2); color: var(--text); }
+  .search { margin-left: auto; display: flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 13px; color: var(--muted); width: 220px; font-size: 13.5px; }
+  .header-avatar { position: relative; }
+
+  /* ─────────── edition switch ─────────── */
+  .edition { display: flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 4px; }
+  .edition button { border: 0; background: transparent; font-family: inherit; font-weight: 600; font-size: 13px; padding: 6px 14px; border-radius: 999px; cursor: pointer; color: var(--secondary); transition: var(--transition); }
+  .edition button.on { color: #fff; }
+  body.lite .edition .e-lite { background: var(--live); color: #fff; box-shadow: 0 2px 8px var(--live-glow); }
+  body.pro  .edition .e-pro  { background: var(--pro); color: #fff; box-shadow: 0 2px 8px rgba(123,92,255,.4); }
+
+  /* ─────────── layout ─────────── */
+  .wrap { max-width: 1240px; margin: 22px auto; padding: 0 22px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+  @media (max-width: 980px) { .wrap { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .card + .card { margin-top: 18px; }
+  .card-h { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 9px; font-weight: 600; }
+  .card-h .count { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--surface-2); padding: 2px 9px; border-radius: 999px; }
+
+  /* ─────────── live badge (THE feature) ─────────── */
+  .av { position: relative; display: inline-block; vertical-align: middle; flex: none; }
+  .av img, .av .ph { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; display: block; background: linear-gradient(135deg,#cfd3e6,#aeb3cf); }
+  .av.sm img, .av.sm .ph { width: 30px; height: 30px; }
+  .av.lg img, .av.lg .ph { width: 60px; height: 60px; }
+  .av .ph { display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 15px; }
+  /* live ring + badge appended by the Avatar component override */
+  .av.live::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid var(--live); animation: ring 1.8s infinite; pointer-events: none; }
+  .av.live .badge { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); background: var(--live); color: #fff; font-size: 8.5px; font-weight: 800; letter-spacing: .6px; padding: 2px 6px; border-radius: 4px; border: 2px solid var(--surface); line-height: 1; white-space: nowrap; box-shadow: 0 1px 4px var(--live-glow); }
+  .av .badge { display: none; }
+  .av.live .badge { display: block; }
+  .av.live .badge::before { content: "● "; font-size: 7px; vertical-align: middle; }
+
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 var(--live-glow);} 70%{box-shadow:0 0 0 7px rgba(255,31,75,0);} 100%{box-shadow:0 0 0 0 rgba(255,31,75,0);} }
+  @keyframes ring { 0%{opacity:1;transform:scale(1);} 70%{opacity:0;transform:scale(1.18);} 100%{opacity:0;transform:scale(1.18);} }
+
+  /* ─────────── stream viewer ─────────── */
+  .viewer { background: #000; position: relative; aspect-ratio: 16/9; display: grid; place-items: center; color: #fff; overflow: hidden; }
+  .viewer .bg { position: absolute; inset: 0; background:
+      radial-gradient(circle at 30% 30%, rgba(255,31,75,.30), transparent 60%),
+      radial-gradient(circle at 70% 70%, rgba(123,92,255,.28), transparent 60%),
+      linear-gradient(135deg,#1a1c26,#0c0d13); }
+  .viewer .play { position: relative; z-index: 2; width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,.14); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,.3); display: grid; place-items: center; font-size: 26px; cursor: pointer; transition: var(--transition); }
+  .viewer .play:hover { background: rgba(255,255,255,.24); transform: scale(1.05); }
+  .viewer .tag { position: absolute; top: 14px; left: 14px; z-index: 3; display: flex; align-items: center; gap: 7px; }
+  .pill-live { background: var(--live); color: #fff; font-weight: 800; font-size: 11px; letter-spacing: .7px; padding: 4px 9px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; }
+  .pill-live .d { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: pulse 1.4s infinite; }
+  .pill-views { background: rgba(0,0,0,.5); backdrop-filter: blur(4px); color: #fff; font-size: 11.5px; font-weight: 600; padding: 4px 9px; border-radius: 6px; }
+  .viewer .src { position: absolute; bottom: 14px; right: 14px; z-index: 3; font-size: 11px; color: rgba(255,255,255,.7); display: flex; align-items: center; gap: 6px; }
+
+  .provtabs { display: flex; gap: 4px; padding: 10px 14px; background: var(--studio); border-bottom: 1px solid rgba(255,255,255,.06); }
+  .provtabs button { border: 0; background: transparent; color: rgba(255,255,255,.55); font-family: inherit; font-weight: 600; font-size: 13px; padding: 7px 13px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); }
+  .provtabs button:hover { color: #fff; background: rgba(255,255,255,.07); }
+  .provtabs button.on { background: rgba(255,255,255,.12); color: #fff; }
+  .provtabs .pro-only { display: none; }
+  body.pro .provtabs .pro-only { display: flex; }
+  .provtabs .lock { margin-left: auto; font-size: 11px; color: rgba(255,255,255,.4); align-self: center; }
+  body.pro .provtabs .lock { display: none; }
+  .fa-youtube { color: #ff0000; } .fa-twitch { color: #9146ff; }
+  .provtabs button.on .fa-youtube, .provtabs button.on .fa-twitch { color: inherit; }
+
+  .stream-meta { padding: 15px 18px; display: flex; align-items: flex-start; gap: 13px; }
+  .stream-meta h2 { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+  .stream-meta .by { font-size: 13px; color: var(--secondary); }
+  .stream-meta .by b { color: var(--text); }
+  .follow { margin-left: auto; border: 0; background: var(--live); color: #fff; font-family: inherit; font-weight: 600; font-size: 13px; padding: 9px 16px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+
+  /* ─────────── discussion list ─────────── */
+  .disc { display: flex; align-items: center; gap: 13px; padding: 13px 18px; border-bottom: 1px solid var(--border); transition: var(--transition); }
+  .disc:last-child { border-bottom: 0; }
+  .disc:hover { background: var(--surface-2); }
+  .disc .body { min-width: 0; flex: 1; }
+  .disc .title { font-weight: 600; font-size: 14.5px; display: flex; align-items: center; gap: 8px; }
+  .disc .meta { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+  .disc .meta b { color: var(--secondary); font-weight: 600; }
+  .tag-live { font-size: 9.5px; font-weight: 800; letter-spacing: .5px; color: var(--live); border: 1.5px solid var(--live); padding: 1px 6px; border-radius: 5px; }
+  .disc .nums { margin-left: auto; text-align: right; font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  /* ─────────── sidebar ─────────── */
+  .live-now .row { display: flex; align-items: center; gap: 11px; padding: 11px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: var(--transition); }
+  .live-now .row:last-child { border-bottom: 0; }
+  .live-now .row:hover { background: var(--surface-2); }
+  .live-now .who { font-weight: 600; font-size: 14px; }
+  .live-now .what { font-size: 12px; color: var(--muted); }
+  .live-now .v { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--live); display: flex; align-items: center; gap: 4px; }
+
+  .golive { padding: 16px; }
+  .golive .lead { font-size: 13px; color: var(--secondary); margin-bottom: 12px; }
+  .golive label { font-size: 12px; font-weight: 600; color: var(--secondary); display: block; margin: 11px 0 5px; }
+  .golive input, .golive select { width: 100%; font-family: inherit; font-size: 13.5px; padding: 9px 11px; border: 1px solid var(--border-2); border-radius: 9px; background: var(--surface-2); color: var(--text); }
+  .golive .seg { display: flex; gap: 7px; }
+  .golive .seg button { flex: 1; border: 1px solid var(--border-2); background: var(--surface-2); font-family: inherit; font-weight: 600; font-size: 13px; padding: 9px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .golive .seg button.on { border-color: var(--live); color: var(--live); background: rgba(255,31,75,.06); }
+  .btn-golive { width: 100%; margin-top: 14px; border: 0; font-family: inherit; font-weight: 700; font-size: 14px; padding: 12px; border-radius: 10px; cursor: pointer; color: #fff; background: var(--live); box-shadow: 0 4px 14px var(--live-glow); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  body.pro .btn-golive { background: var(--pro); box-shadow: 0 4px 14px rgba(123,92,255,.4); }
+
+  .lite-only { display: block; } .pro-only { display: none; }
+  body.pro .lite-only { display: none; } body.pro .pro-only { display: block; }
+  .pro-only.flexp { display: none; } body.pro .pro-only.flexp { display: flex; }
+
+  .keybox { background: var(--studio); border-radius: var(--radius-sm); padding: 12px; margin-top: 6px; }
+  .keybox .klabel { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 4px; }
+  .keybox .kval { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12.5px; }
+  .keybox .kval code { background: rgba(255,255,255,.08); padding: 5px 8px; border-radius: 6px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .keybox .kval i { cursor: pointer; color: rgba(255,255,255,.6); }
+  .keybox + .keybox { margin-top: 8px; }
+  .multi { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .multi .opt { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 1px solid var(--border-2); border-radius: 9px; font-size: 13px; }
+  .multi .opt .sw { margin-left: auto; width: 34px; height: 19px; border-radius: 999px; background: var(--pro); position: relative; }
+  .multi .opt .sw::after { content: ""; position: absolute; top: 2px; right: 2px; width: 15px; height: 15px; border-radius: 50%; background: #fff; }
+
+  /* transport indicator */
+  .transport { display: flex; align-items: center; gap: 9px; padding: 11px 16px; font-size: 12.5px; color: var(--secondary); background: var(--surface-2); border-top: 1px solid var(--border); }
+  .transport .d { width: 8px; height: 8px; border-radius: 50%; background: var(--online); box-shadow: 0 0 0 0 rgba(56,193,114,.5); animation: pulse 2s infinite; }
+  .transport b { color: var(--text); }
+  .transport .swap { margin-left: auto; font-size: 11.5px; color: var(--pro); cursor: pointer; font-weight: 600; }
+
+  /* ─────────── feature compare ─────────── */
+  .compare { max-width: 1240px; margin: 8px auto 34px; padding: 0 22px; }
+  .compare h3 { font-size: 16px; margin: 22px 4px 12px; display: flex; align-items: center; gap: 9px; }
+  table.cmp { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+  table.cmp th, table.cmp td { padding: 12px 16px; text-align: left; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+  table.cmp thead th { background: var(--surface-2); font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+  table.cmp th.c-lite, table.cmp td.c-lite { text-align: center; width: 130px; }
+  table.cmp th.c-pro,  table.cmp td.c-pro  { text-align: center; width: 130px; background: rgba(123,92,255,.04); }
+  table.cmp th.c-lite { color: var(--live); } table.cmp th.c-pro { color: var(--pro); }
+  table.cmp tr:last-child td { border-bottom: 0; }
+  .yes { color: var(--online); } .no { color: var(--muted); opacity: .5; }
+  .feat { font-weight: 600; } .feat small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+
+  .foot { max-width: 1240px; margin: 0 auto 40px; padding: 0 22px; color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+  .foot code { background: var(--surface); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; color: var(--secondary); }
+</style>
+</head>
+<body class="lite">
+
+<div class="ribbon">
+  <b>CONCEPT RENDER</b> · OnAir for Flarum 2 — toggle <b>Lite / Pro</b> top-right to see the difference. Nothing here is wired to a backend.
+</div>
+
+<!-- ───────── header ───────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo"><span class="dot"></span>OnAir <small>live</small></div>
+    <nav class="nav">
+      <a class="active" href="#">All</a>
+      <a href="#"><i class="fa-solid fa-tower-broadcast" style="color:var(--live)"></i> Live</a>
+      <a href="#">Following</a>
+      <a href="#">Tags</a>
+    </nav>
+    <div class="search"><i class="fa-solid fa-magnifying-glass"></i> Search…</div>
+    <div class="edition">
+      <button class="e-lite on" onclick="setEdition('lite')">Lite</button>
+      <button class="e-pro" onclick="setEdition('pro')">Pro</button>
+    </div>
+    <!-- header avatar also gets the badge automatically (it renders <Avatar>) -->
+    <div class="header-avatar av sm live"><div class="ph">Y</div><span class="badge">LIVE</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- ─────────── main column ─────────── -->
+  <div class="main">
+
+    <!-- featured live stream viewer -->
+    <div class="card">
+      <div class="provtabs">
+        <button class="on" data-prov="twitch" onclick="setProv(this,'twitch')"><i class="fa-brands fa-twitch"></i> Twitch</button>
+        <button data-prov="youtube" onclick="setProv(this,'youtube')"><i class="fa-brands fa-youtube"></i> YouTube</button>
+        <button class="pro-only" data-prov="rtmp" onclick="setProv(this,'rtmp')"><i class="fa-solid fa-tower-broadcast"></i> OnAir RTMP <span style="font-size:9px;background:var(--pro);color:#fff;padding:1px 5px;border-radius:4px;margin-left:2px">PRO</span></button>
+        <span class="lock"><i class="fa-solid fa-lock"></i> RTMP + HLS in Pro</span>
+      </div>
+      <div class="viewer">
+        <div class="bg"></div>
+        <div class="tag">
+          <span class="pill-live"><span class="d"></span> LIVE</span>
+          <span class="pill-views"><i class="fa-solid fa-eye"></i> 1,284</span>
+        </div>
+        <div class="play"><i class="fa-solid fa-play" style="margin-left:4px"></i></div>
+        <div class="src"><span id="srcName"><i class="fa-brands fa-twitch fa-twitch"></i> embedded from Twitch</span></div>
+      </div>
+      <div class="stream-meta">
+        <div class="av live"><div class="ph">Y</div><span class="badge">LIVE</span></div>
+        <div>
+          <h2 id="streamTitle">Saturday film breakdown — Week 11 slate 🏈</h2>
+          <div class="by">by <b>you</b> · in <b>Game Day</b> · started 38 min ago</div>
+        </div>
+        <button class="follow"><i class="fa-solid fa-bell"></i> Notify me</button>
+      </div>
+    </div>
+
+    <!-- discussion list with live badges on authors -->
+    <div class="card" style="margin-top:18px">
+      <div class="card-h"><i class="fa-solid fa-tower-broadcast" style="color:var(--live)"></i> Discussions <span class="count">badge follows the avatar everywhere</span></div>
+
+      <div class="disc">
+        <div class="av live"><div class="ph" style="background:linear-gradient(135deg,#ff9a6b,#ff5e7e)">M</div><span class="badge">LIVE</span></div>
+        <div class="body">
+          <div class="title">Watch party: rivalry weekend megathread <span class="tag-live">● LIVE</span></div>
+          <div class="meta"><b>MarcusDB</b> is streaming · 47 replies</div>
+        </div>
+        <div class="nums">2m ago</div>
+      </div>
+
+      <div class="disc">
+        <div class="av"><div class="ph" style="background:linear-gradient(135deg,#6bd5ff,#5e8bff)">A</div><span class="badge">LIVE</span></div>
+        <div class="body">
+          <div class="title">Recruiting board — early signing predictions</div>
+          <div class="meta"><b>Ana_R</b> · 12 replies</div>
+        </div>
+        <div class="nums">1h ago</div>
+      </div>
+
+      <div class="disc">
+        <div class="av live"><div class="ph" style="background:linear-gradient(135deg,#b388ff,#7b5cff)">J</div><span class="badge">LIVE</span></div>
+        <div class="body">
+          <div class="title">Co-streaming the late kickoff — pull up <span class="tag-live">● LIVE</span></div>
+          <div class="meta"><b>JordanK</b> is streaming · 8 replies</div>
+        </div>
+        <div class="nums">5m ago</div>
+      </div>
+
+      <div class="disc">
+        <div class="av"><div class="ph" style="background:linear-gradient(135deg,#ffd36b,#ff9e3d)">T</div><span class="badge">LIVE</span></div>
+        <div class="body">
+          <div class="title">Transfer portal tracker (updated daily)</div>
+          <div class="meta"><b>texas_tom</b> · 203 replies</div>
+        </div>
+        <div class="nums">3h ago</div>
+      </div>
+    </div>
+
+    <!-- where the badge shows -->
+    <div class="card" style="margin-top:18px">
+      <div class="card-h"><i class="fa-solid fa-location-crosshairs" style="color:var(--pro)"></i> One override, every avatar</div>
+      <div style="padding:16px 18px; display:flex; flex-wrap:wrap; gap:24px; align-items:center; color:var(--secondary); font-size:13px">
+        <div style="display:flex;align-items:center;gap:10px"><div class="av sm live"><div class="ph">M</div><span class="badge">LIVE</span></div> mentions</div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="av live"><div class="ph">J</div><span class="badge">LIVE</span></div> post author</div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="av lg live"><div class="ph">Y</div><span class="badge">LIVE</span></div> user card</div>
+        <div style="max-width:230px">Achieved by overriding the shared <code style="font-size:12px">Avatar</code> component (main-bundle, safe to extend) — not by editing each call site.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── sidebar ─────────── -->
+  <aside class="side">
+
+    <!-- Live Now widget -->
+    <div class="card live-now">
+      <div class="card-h"><span class="pill-live" style="font-size:10px"><span class="d"></span> LIVE NOW</span><span class="count">3</span></div>
+      <div class="row">
+        <div class="av sm live"><div class="ph" style="background:linear-gradient(135deg,#ff9a6b,#ff5e7e)">M</div><span class="badge">LIVE</span></div>
+        <div><div class="who">MarcusDB</div><div class="what">Rivalry watch party</div></div>
+        <div class="v"><i class="fa-solid fa-eye"></i> 1.2k</div>
+      </div>
+      <div class="row">
+        <div class="av sm live"><div class="ph" style="background:linear-gradient(135deg,#b388ff,#7b5cff)">J</div><span class="badge">LIVE</span></div>
+        <div><div class="who">JordanK</div><div class="what">Late kickoff co-stream</div></div>
+        <div class="v"><i class="fa-solid fa-eye"></i> 342</div>
+      </div>
+      <div class="row">
+        <div class="av sm live"><div class="ph">Y</div><span class="badge">LIVE</span></div>
+        <div><div class="who">you</div><div class="what">Week 11 film breakdown</div></div>
+        <div class="v"><i class="fa-solid fa-eye"></i> 1.3k</div>
+      </div>
+      <div class="transport">
+        <span class="d"></span>
+        <span id="transportLabel">Realtime push · <b>flarum/realtime</b></span>
+        <span class="swap" onclick="toggleTransport()">simulate fallback</span>
+      </div>
+    </div>
+
+    <!-- Go Live panel -->
+    <div class="card">
+      <div class="card-h"><i class="fa-solid fa-video" style="color:var(--live)"></i> Go Live</div>
+      <div class="golive">
+
+        <!-- LITE -->
+        <div class="lite-only">
+          <div class="lead">Connect a YouTube or Twitch stream and OnAir embeds it in your discussion — and lights up your <b>LIVE</b> badge.</div>
+          <label>Provider</label>
+          <div class="seg">
+            <button class="on" onclick="liteProv(this)"><i class="fa-brands fa-twitch"></i> Twitch</button>
+            <button onclick="liteProv(this)"><i class="fa-brands fa-youtube"></i> YouTube</button>
+          </div>
+          <label>Channel or video URL</label>
+          <input value="twitch.tv/your_channel" />
+          <label>Stream title</label>
+          <input value="Saturday film breakdown — Week 11" />
+          <button class="btn-golive"><i class="fa-solid fa-tower-broadcast"></i> Go live</button>
+        </div>
+
+        <!-- PRO -->
+        <div class="pro-only">
+          <div class="lead">Stream straight into the community with the built-in RTMP server — no third party needed. Point OBS here:</div>
+          <div class="keybox">
+            <div class="klabel">Ingest server (RTMP)</div>
+            <div class="kval"><code class="mono">rtmp://flarum.test:1935/live</code> <i class="fa-regular fa-copy"></i></div>
+          </div>
+          <div class="keybox">
+            <div class="klabel">Your stream key</div>
+            <div class="kval"><code class="mono">live_8f3a…d20c</code> <i class="fa-solid fa-eye"></i> <i class="fa-regular fa-copy"></i></div>
+          </div>
+          <label>Also restream to (multistream)</label>
+          <div class="multi">
+            <div class="opt"><i class="fa-brands fa-youtube fa-youtube"></i> YouTube <span class="sw"></span></div>
+            <div class="opt"><i class="fa-brands fa-twitch fa-twitch"></i> Twitch <span class="sw"></span></div>
+          </div>
+          <label>Options</label>
+          <div class="multi">
+            <div class="opt"><i class="fa-solid fa-record-vinyl"></i> Auto-record VOD <span class="sw"></span></div>
+            <div class="opt"><i class="fa-solid fa-comments"></i> Live chat overlay <span class="sw"></span></div>
+          </div>
+          <button class="btn-golive"><i class="fa-solid fa-tower-broadcast"></i> Start broadcast</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- scheduled (pro) -->
+    <div class="card pro-only">
+      <div class="card-h"><i class="fa-solid fa-calendar-day" style="color:var(--pro)"></i> Scheduled <span class="count">Pro · calendar</span></div>
+      <div style="padding:14px 16px; font-size:13px; color:var(--secondary)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><i class="fa-solid fa-clock" style="color:var(--pro)"></i> <b style="color:var(--text)">Sun 1:00 PM</b> — Bowl projections live</div>
+        <div style="display:flex;align-items:center;gap:10px"><i class="fa-solid fa-clock" style="color:var(--pro)"></i> <b style="color:var(--text)">Tue 8:00 PM</b> — Portal recap show</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- ─────────── feature compare ─────────── -->
+<div class="compare">
+  <h3><i class="fa-solid fa-table-list"></i> Lite vs Pro</h3>
+  <table class="cmp">
+    <thead><tr><th>Feature</th><th class="c-lite">Lite · free</th><th class="c-pro">Pro</th></tr></thead>
+    <tbody>
+      <tr><td class="feat">LIVE badge on avatar everywhere<small>posts, list, mentions, header, sidebar</small></td><td class="c-lite"><i class="fa-solid fa-check yes"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Live Now widget + index filter</td><td class="c-lite"><i class="fa-solid fa-check yes"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">YouTube embed viewer</td><td class="c-lite"><i class="fa-solid fa-check yes"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Twitch embed viewer</td><td class="c-lite"><i class="fa-solid fa-check yes"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Realtime presence + polling fallback<small>works with or without flarum/realtime</small></td><td class="c-lite"><i class="fa-solid fa-check yes"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Built-in RTMP server → HLS playback<small>stream into the forum, no third party</small></td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Per-user stream keys + creator dashboard</td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Multistream / restream to YT + Twitch</td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">VOD recording + clips</td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Live chat overlay + viewer counts</td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Go-live notifications</td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+      <tr><td class="feat">Scheduled streams + calendar tie-in</td><td class="c-lite"><i class="fa-solid fa-xmark no"></i></td><td class="c-pro"><i class="fa-solid fa-check yes"></i></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="foot">
+  <b>How it's built (Flarum 2):</b> the LIVE badge overrides the shared <code>Avatar</code> component (main-bundle → safe to extend at init) and reads a serializer-supplied <code>user.isLive()</code>.
+  Presence runs through <code>app.onair.presence</code>, which picks <code>RealtimeTransport</code> when <code>flarum/realtime</code> is detected and falls back to <code>PollingTransport</code> (<code>GET /api/onair/live</code>) otherwise.
+  Pro is a separate proprietary package (<code>ernestdefoe/onair-pro</code>) that requires the free <code>ernestdefoe/onair</code> and plugs the RTMP/HLS pipeline into Lite's provider registry. See <code>ROADMAP.md</code>.
+</div>
+
+<script>
+  function setEdition(ed){
+    document.body.className = ed;
+    document.querySelectorAll('.edition button').forEach(b=>b.classList.remove('on'));
+    document.querySelector('.edition .e-'+ed).classList.add('on');
+    // if leaving Pro while RTMP tab active, snap back to twitch
+    if(ed==='lite'){ const r=document.querySelector('.provtabs button[data-prov="rtmp"]'); if(r&&r.classList.contains('on')) setProv(document.querySelector('.provtabs button[data-prov="twitch"]'),'twitch'); }
+  }
+  const provName = {
+    twitch:'<i class="fa-brands fa-twitch fa-twitch"></i> embedded from Twitch',
+    youtube:'<i class="fa-brands fa-youtube fa-youtube"></i> embedded from YouTube',
+    rtmp:'<i class="fa-solid fa-tower-broadcast" style="color:#7b5cff"></i> OnAir RTMP · HLS · low latency'
+  };
+  function setProv(btn,p){
+    document.querySelectorAll('.provtabs button').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('srcName').innerHTML = provName[p];
+  }
+  function liteProv(btn){ btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+
+  let realtime = true;
+  function toggleTransport(){
+    realtime = !realtime;
+    const el = document.getElementById('transportLabel');
+    el.innerHTML = realtime
+      ? 'Realtime push · <b>flarum/realtime</b>'
+      : 'Polling every 30s · <b>fallback</b>';
+    document.querySelector('.transport .swap').textContent = realtime ? 'simulate fallback' : 'simulate realtime';
+  }
+</script>
+</body>
+</html>

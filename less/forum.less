@@ -1,0 +1,259 @@
+@onair-live: #ff1f4b;
+@onair-live-glow: rgba(255, 31, 75, 0.45);
+
+/* ── LIVE badge on avatars (the cross-cutting feature) ─────────────────── */
+.OnAir-avatarWrap {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0;
+
+  // pulsing ring around the avatar
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid @onair-live;
+    animation: onair-ring 1.8s infinite;
+    pointer-events: none;
+  }
+}
+
+.OnAir-liveBadge {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: @onair-live;
+  color: #fff;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 2px solid var(--body-bg, #fff);
+  white-space: nowrap;
+  box-shadow: 0 1px 4px @onair-live-glow;
+  z-index: 2;
+}
+
+@keyframes onair-ring {
+  0% { opacity: 1; transform: scale(1); }
+  70% { opacity: 0; transform: scale(1.18); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+
+@keyframes onair-pulse {
+  0% { box-shadow: 0 0 0 0 @onair-live-glow; }
+  70% { box-shadow: 0 0 0 7px rgba(255, 31, 75, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 31, 75, 0); }
+}
+
+/* ── Live Now widget ───────────────────────────────────────────────────── */
+.OnAir-liveNow {
+  margin-bottom: 20px;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  &-count {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted-color);
+  }
+  &-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    color: var(--text-color);
+
+    &:hover { background: var(--control-bg); }
+  }
+  &-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+
+    &--ph {
+      display: grid;
+      place-items: center;
+      background: var(--control-bg);
+      font-weight: 700;
+    }
+  }
+  &-meta { min-width: 0; flex: 1; }
+  &-who { font-weight: 600; font-size: 14px; }
+  &-what {
+    font-size: 12px;
+    color: var(--muted-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &-views {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: @onair-live;
+  }
+}
+
+.OnAir-livePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: @onair-live;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 3px 8px;
+  border-radius: 5px;
+
+  &-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    animation: onair-pulse 1.4s infinite;
+  }
+}
+
+/* ── Stream viewer + page ──────────────────────────────────────────────── */
+.OnAir-viewer {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: var(--border-radius, 8px);
+  overflow: hidden;
+
+  &-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  &--empty {
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.OnAir-streamPage {
+  padding: 20px 0;
+
+  &-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-top: 15px;
+  }
+  &-info { flex: 1; min-width: 0; }
+  &-title { font-size: 18px; font-weight: 700; margin: 0 0 2px; }
+  &-by { font-size: 13px; color: var(--muted-color); }
+  &-views { font-weight: 600; color: @onair-live; }
+  &-endedNote {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: var(--border-radius, 8px);
+    background: var(--control-bg);
+    color: var(--muted-color);
+    text-align: center;
+  }
+}
+.OnAir-endButton {
+  background: @onair-live;
+  color: #fff;
+}
+
+/* ── Live directory page ───────────────────────────────────────────────── */
+.OnAir-directory {
+  padding: 20px 0;
+
+  &-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  &-title { font-size: 20px; font-weight: 700; margin: 0; flex: 1; }
+  &-empty {
+    text-align: center;
+    color: var(--muted-color);
+    padding: 48px 20px;
+
+    .fas, .far { font-size: 30px; opacity: 0.5; display: block; margin-bottom: 10px; }
+  }
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+}
+
+.OnAir-card {
+  display: block;
+  border-radius: var(--border-radius, 8px);
+  overflow: hidden;
+  background: var(--control-bg);
+  color: var(--text-color);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+  &:hover { transform: translateY(-2px); box-shadow: var(--shadow, 0 6px 18px rgba(0,0,0,0.12)); }
+
+  &-thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #1a1c26, #0c0d13);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  &-views {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 5px;
+  }
+  &-body { display: flex; align-items: center; gap: 10px; padding: 11px 12px; }
+  &-meta { min-width: 0; flex: 1; }
+  &-title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &-by { font-size: 12px; color: var(--muted-color); }
+}
+
+/* ── Go Live modal ─────────────────────────────────────────────────────── */
+.OnAir-providerSeg {
+  display: flex;
+  gap: 8px;
+
+  &-btn.is-active {
+    border-color: @onair-live;
+    color: @onair-live;
+  }
+}
+.OnAir-goLiveModal-submit { width: 100%; }
