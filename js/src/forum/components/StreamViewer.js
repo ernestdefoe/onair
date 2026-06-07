@@ -12,7 +12,14 @@ export default class StreamViewer extends Component {
     if (!stream) return null;
 
     const provider = providerFor(stream);
-    const src = provider && provider.embedSrc(stream);
+
+    // A provider may supply a custom player vnode (e.g. Pro's hls.js HLS
+    // player) instead of an iframe embed. Falls back to the iframe otherwise.
+    if (provider && typeof provider.view === 'function') {
+      return m('.OnAir-viewer', provider.view(stream));
+    }
+
+    const src = provider && provider.embedSrc && provider.embedSrc(stream);
 
     if (!src) {
       return m('.OnAir-viewer.OnAir-viewer--empty', app.translator.trans('onair.forum.viewer.unavailable'));
