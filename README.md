@@ -8,7 +8,7 @@ discussion list, mentions, the header, the sidebar.
 
 ![OnAir — the LIVE badge follows a streamer's avatar everywhere, with a Live Now sidebar widget](screenshots/onair-live-badge.png)
 
-> **Free / MIT.** The optional premium add-on **[OnAir+](https://github.com/ernestdefoe/onair-pro)**
+> **Free / MIT.** The optional premium add-on **[OnAir+](https://github.com/ernestdefoe/onair-plus)**
 > turns your forum into the whole platform — a built-in RTMP server (stream straight in
 > from OBS), in‑forum HLS playback, multistream, VOD, live chat, go‑live notifications and
 > scheduled streams. See the [comparison](#onair-vs-onair) below.
