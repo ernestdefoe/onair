@@ -9,7 +9,9 @@ use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
+use Flarum\Discussion\Discussion;
 use Flarum\Foundation\ValidationException;
+use Flarum\Locale\TranslatorInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as BaseContext;
@@ -19,6 +21,7 @@ class StreamResource extends AbstractDatabaseResource
     public function __construct(
         protected ProviderManager $providers,
         protected SettingsRepositoryInterface $settings,
+        protected TranslatorInterface $translator,
     ) {}
 
     public function type(): string
@@ -110,7 +113,21 @@ class StreamResource extends AbstractDatabaseResource
 
             Schema\Integer::make('discussionId')
                 ->writable()
-                ->set(fn (Stream $s, $value) => $s->discussion_id = $value ? (int) $value : null)
+                ->set(function (Stream $s, $value, BaseContext $context) {
+                    // Only link a discussion that exists AND is visible to the
+                    // actor — otherwise store null rather than a dangling /
+                    // unauthorized reference.
+                    if (! $value) {
+                        $s->discussion_id = null;
+                        return;
+                    }
+                    $id = (int) $value;
+                    $visible = Discussion::query()
+                        ->whereVisibleTo($context->getActor())
+                        ->whereKey($id)
+                        ->exists();
+                    $s->discussion_id = $visible ? $id : null;
+                })
                 ->get(fn (Stream $s) => $s->discussion_id),
 
             Schema\DateTime::make('startedAt')
@@ -133,7 +150,7 @@ class StreamResource extends AbstractDatabaseResource
         $url = trim($body['data']['attributes']['channelUrl'] ?? '');
 
         if ($url === '') {
-            throw new ValidationException(['channelUrl' => resolve(\Flarum\Locale\TranslatorInterface::class)->trans('onair.lib.errors.url_required')]);
+            throw new ValidationException(['channelUrl' => $this->translator->trans('onair.lib.errors.url_required')]);
         }
 
         // Resolve provider + embed details (throws if unrecognised).

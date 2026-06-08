@@ -3,6 +3,7 @@
 namespace Ernestdefoe\OnAir\Provider;
 
 use Flarum\Foundation\ValidationException;
+use Flarum\Locale\TranslatorInterface;
 
 /**
  * Registry of stream providers. Lite binds YouTube + Twitch in the service
@@ -13,11 +14,15 @@ class ProviderManager
     /** @var StreamProvider[] */
     protected array $providers = [];
 
+    protected ?TranslatorInterface $translator;
+
     /**
      * @param StreamProvider[] $providers
      */
-    public function __construct(array $providers = [])
+    public function __construct(array $providers = [], ?TranslatorInterface $translator = null)
     {
+        $this->translator = $translator;
+
         foreach ($providers as $provider) {
             $this->add($provider);
         }
@@ -62,8 +67,9 @@ class ProviderManager
         $provider = $this->resolve($url);
 
         if (! $provider) {
+            $key = 'onair.lib.errors.no_provider';
             throw new ValidationException([
-                'channel_url' => resolve(\Flarum\Locale\TranslatorInterface::class)->trans('onair.lib.errors.no_provider'),
+                'channel_url' => $this->translator ? $this->translator->trans($key) : $key,
             ]);
         }
 

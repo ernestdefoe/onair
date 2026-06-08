@@ -77,7 +77,11 @@ export default class StreamPage extends Page {
         if (app.onair && app.onair.presence) app.onair.presence.refresh();
         m.route.set(app.route('ernestdefoe-onair.index'));
       })
-      .catch(() => {})
+      .catch(() => {
+        // Surface the failure instead of swallowing it — the stream is still
+        // live and the member needs to know the "end" didn't take.
+        app.alerts.show({ type: 'error' }, app.translator.trans('onair.forum.stream.end_failed'));
+      })
       .then(() => {
         this.ending = false;
         m.redraw();
