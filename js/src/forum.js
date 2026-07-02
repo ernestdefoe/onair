@@ -12,6 +12,7 @@ import addLiveBadge from './forum/addLiveBadge';
 import registerProviders from './forum/providers';
 import setupPresence from './forum/presence';
 import LiveNowWidget from './forum/components/LiveNowWidget';
+import LiveStreamsWidget from './forum/components/LiveStreamsWidget';
 import GoLiveModal from './forum/components/GoLiveModal';
 import StreamPage from './forum/components/StreamPage';
 import LiveDirectoryPage from './forum/components/LiveDirectoryPage';
@@ -84,6 +85,24 @@ app.initializers.add('ernestdefoe-onair', () => {
       80
     );
     items.add('onair-live-now', m(LiveNowWidget), 4);
+  });
+
+  // Bespoke integration: a "Live streams" widget with inline muted previews
+  // (YouTube/Twitch iframes; OnAir+'s hls.js player for rtmp). Queue-based
+  // registration — Bespoke drains it whenever it renders, so load order never
+  // matters and this line is inert when Bespoke isn't installed. Labels are
+  // full translation keys resolved from OUR locale by Bespoke's inspector.
+  (window.BespokeWidgetQueue = window.BespokeWidgetQueue || []).push({
+    type: 'onair-live',
+    label: 'onair.forum.widget.name',
+    icon: '📺',
+    zones: ['above-list', 'sidebar', 'below-list', 'footer'],
+    schema: [
+      { key: 'title', type: 'text', label: 'onair.forum.widget.title_label', default: 'Live streams' },
+      { key: 'count', type: 'number', label: 'onair.forum.widget.count_label', default: 4 },
+      { key: 'preview', type: 'toggle', label: 'onair.forum.widget.preview_label', default: true },
+    ],
+    component: LiveStreamsWidget,
   });
 
   // Start presence AFTER boot. `app.forum` is only populated once boot

@@ -41,6 +41,10 @@ class ListLiveController implements RequestHandlerInterface
                 'avatarUrl'   => $user?->avatar_url,
                 'provider'    => $s->provider,
                 'title'       => $s->title,
+                // Public embed target (YouTube /embed/…, Twitch player URL, or
+                // the HLS .m3u8 for rtmp). Lets widgets render inline previews
+                // without a per-stream resource fetch.
+                'embedUrl'    => $s->embed_url,
                 'viewerCount' => (int) $s->viewer_count,
                 'startedAt'   => optional($s->started_at)->toIso8601String(),
             ];

@@ -257,3 +257,152 @@
   }
 }
 .OnAir-goLiveModal-submit { width: 100%; }
+
+// ─── "Live streams" Bespoke widget (previews) ────────────────────────────
+// Rendered inside Bespoke's widget frame; colors ride core vars so it fits
+// whatever theme is active.
+
+.OnAir-bw-count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: color-mix(in srgb, #ff1f4b 14%, transparent);
+  color: #ff1f4b;
+}
+
+.OnAir-bw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.OnAir-bw-preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  margin-bottom: 8px;
+
+  .OnAir-livePill {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 3;
+  }
+}
+
+.OnAir-bw-frame,
+.OnAir-bw-hls,
+.OnAir-bw-hls .OnAirPlus-player,
+.OnAir-bw-hls video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  object-fit: cover;
+  pointer-events: none; // ambient preview — the overlay link owns clicks
+}
+
+.OnAir-bw-open {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.OnAir-bw-coverPh {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(6px) brightness(0.5);
+  }
+}
+
+.OnAir-bw-play {
+  position: relative;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.OnAir-bw-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+
+    .OnAir-bw-who { color: var(--primary-color); }
+  }
+}
+
+.OnAir-bw-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+
+  &--ph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 700;
+  }
+}
+
+.OnAir-bw-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.OnAir-bw-who {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.OnAir-bw-what {
+  font-size: 11.5px;
+  color: var(--muted-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.OnAir-bw-views {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  color: var(--muted-color);
+
+  .icon { font-size: 10px; }
+}
