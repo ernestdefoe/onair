@@ -406,3 +406,14 @@
 
   .icon { font-size: 10px; }
 }
+
+// Wide zones (above/below the discussion list): tile the stream cards into a
+// responsive grid instead of the sidebar's vertical stack. auto-fill (not
+// auto-fit) keeps cards preview-sized when only one or two people are live.
+[data-bespoke-zone='above-list'] .OnAir-bw-list,
+[data-bespoke-zone='below-list'] .OnAir-bw-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
