@@ -5,6 +5,7 @@ import Avatar from 'flarum/common/components/Avatar';
 import Link from 'flarum/common/components/Link';
 import Icon from 'flarum/common/components/Icon';
 import Button from 'flarum/common/components/Button';
+import extractText from 'flarum/common/utils/extractText';
 import StreamViewer from './StreamViewer';
 
 /** Full-page viewer at /onair/:id. */
@@ -14,6 +15,7 @@ export default class StreamPage extends Page {
     this.stream = null;
     this.loading = true;
     this.ending = false;
+    this.deleting = false;
 
     const id = m.route.param('id');
     app.store
@@ -39,7 +41,7 @@ export default class StreamPage extends Page {
 
     const stream = this.stream;
     const user = stream.user();
-    const isOwner = app.session.user && user && String(user.id()) === String(app.session.user.id());
+    const canEdit = !!stream.canEdit();
     const ended = stream.status() !== 'live';
 
     return [
@@ -57,16 +59,41 @@ export default class StreamPage extends Page {
             : null,
         ]),
         m('.OnAir-streamPage-views', [Icon.component({ name: 'fa-solid fa-eye' }), ' ', String(stream.viewerCount() || 0)]),
-        isOwner && !ended
+        canEdit && !ended
           ? m(
               Button,
               { className: 'Button OnAir-endButton', icon: 'fa-solid fa-stop', loading: this.ending, onclick: () => this.end() },
               app.translator.trans('onair.forum.stream.end')
             )
           : null,
+        canEdit
+          ? m(
+              Button,
+              { className: 'Button OnAir-deleteButton', icon: 'fa-solid fa-trash', loading: this.deleting, onclick: () => this.remove() },
+              app.translator.trans('onair.forum.stream.delete')
+            )
+          : null,
       ]),
       ended ? m('.OnAir-streamPage-endedNote', app.translator.trans('onair.forum.stream.has_ended')) : null,
     ];
+  }
+
+  remove() {
+    if (!confirm(extractText(app.translator.trans('onair.forum.stream.delete_confirm')))) return;
+    this.deleting = true;
+    this.stream
+      .delete()
+      .then(() => {
+        if (app.onair && app.onair.presence) app.onair.presence.refresh();
+        m.route.set(app.route('ernestdefoe-onair.index'));
+      })
+      .catch(() => {
+        app.alerts.show({ type: 'error' }, app.translator.trans('onair.forum.stream.delete_failed'));
+      })
+      .then(() => {
+        this.deleting = false;
+        m.redraw();
+      });
   }
 
   end() {

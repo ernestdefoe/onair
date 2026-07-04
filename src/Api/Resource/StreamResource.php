@@ -133,6 +133,12 @@ class StreamResource extends AbstractDatabaseResource
             Schema\DateTime::make('startedAt')
                 ->get(fn (Stream $s) => $s->started_at),
 
+            // Backend-computed capability so the frontend never re-implements
+            // the StreamPolicy (owner or onair.manage) — drives the end/delete
+            // buttons on the stream page.
+            Schema\Boolean::make('canEdit')
+                ->get(fn (Stream $s, BaseContext $context) => $context->getActor()->can('edit', $s)),
+
             Schema\Relationship\ToOne::make('user')
                 ->type('users')
                 ->includable()

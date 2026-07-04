@@ -11,6 +11,7 @@ Stream.prototype.externalId = Model.attribute('externalId');
 Stream.prototype.viewerCount = Model.attribute('viewerCount');
 Stream.prototype.discussionId = Model.attribute('discussionId');
 Stream.prototype.startedAt = Model.attribute('startedAt', Model.transformDate);
+Stream.prototype.canEdit = Model.attribute('canEdit');
 
 // Relations must use `.call(this)` (the `(this)` form throws "reading 'data'").
 Stream.prototype.user = function () {
