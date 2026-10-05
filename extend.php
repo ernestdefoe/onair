@@ -7,8 +7,10 @@ use Ernestdefoe\OnAir\Console\HourlySchedule;
 use Ernestdefoe\OnAir\Console\ReapStaleStreamsCommand;
 use Ernestdefoe\OnAir\Event\StreamEnded;
 use Ernestdefoe\OnAir\Event\StreamStarted;
+use Ernestdefoe\OnAir\LiveUsers;
 use Ernestdefoe\OnAir\Model\Stream;
 use Ernestdefoe\OnAir\OnAirServiceProvider;
+use Flarum\Api\Context;
 use Flarum\Api\Resource\UserResource;
 use Flarum\Api\Schema;
 use Flarum\Extend;
@@ -45,13 +47,20 @@ return [
     // 'Class@method' callbacks), so never type-hint params here.
     (new Extend\ApiResource(UserResource::class))
         ->fields(fn () => [
+            // One query per request for every user on the page, not one per
+            // user (see LiveUsers). A loaded relation is used as-is.
             Schema\Boolean::make('isLive')
-                ->get(fn (User $user) => (bool) $user->liveStream),
+                ->get(fn (User $user, Context $context) => $user->relationLoaded('liveStream')
+                    ? (bool) $user->liveStream
+                    : LiveUsers::has($context, (int) $user->id)),
 
+            // Only when asked for with ?include=. A to-one relation carries
+            // linkage by default, which loaded it for every user serialized,
+            // one query each.
             Schema\Relationship\ToOne::make('liveStream')
                 ->type('onair-streams')
                 ->includable()
-                ->get(fn (User $user) => $user->liveStream),
+                ->withoutLinkage(),
         ]),
 
     // A "currently live" hasOne on the core User model.
