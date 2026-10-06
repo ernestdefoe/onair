@@ -93,9 +93,11 @@ A no‑backend concept render of the whole product lives in [`preview/index.html
 - **Providers:** `app.onair.providers` (JS) + the `StreamProvider` interface (PHP) are the
   extension points **OnAir+** plugs its RTMP/HLS provider into.
 
-## Discuss
+## Support
 
-Questions, ideas and release notes: [OnAir on discuss.flarum.org](https://discuss.flarum.org/d/39390-onair-and-onair).
+- **Support forum:** [OnAir on ernestdefoe.online](https://ernestdefoe.online/d/57)
+- **Flarum community:** [OnAir on discuss.flarum.org](https://discuss.flarum.org/d/39390-onair-and-onair)
+- **Bug reports:** [GitHub issues](https://github.com/ernestdefoe/onair/issues)
 
 ## License
 
