@@ -40,7 +40,7 @@ return [
     (new Extend\Routes('api'))
         ->get('/onair/live', 'onair.live', ListLiveController::class),
 
-    (new Extend\ApiResource(StreamResource::class)),
+    new Extend\ApiResource(StreamResource::class),
 
     // Add the LIVE state to every user payload. The closure passed to ->fields()
     // is invoked with ZERO arguments (ContainerUtil only injects for string
