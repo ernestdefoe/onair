@@ -10,11 +10,7 @@ import BaseTransport from './BaseTransport';
  */
 export default class RealtimeTransport extends BaseTransport {
   static available() {
-    return (
-      typeof flarum !== 'undefined' &&
-      flarum.extensions &&
-      !!flarum.extensions['flarum-realtime']
-    );
+    return typeof flarum !== 'undefined' && flarum.extensions && !!flarum.extensions['flarum-realtime'];
   }
 
   start() {

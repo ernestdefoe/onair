@@ -19,25 +19,20 @@ export default class LiveNowWidget extends Component {
       ]),
       m(
         'ul.OnAir-liveNow-list',
-        streams.slice(0, 8).map((s) =>
-          m(
-            'li',
+        streams
+          .slice(0, 8)
+          .map((s) =>
             m(
-              Link,
-              { className: 'OnAir-liveNow-row', href: app.route('ernestdefoe-onair.stream', { id: s.id }) },
-              [
+              'li',
+              m(Link, { className: 'OnAir-liveNow-row', href: app.route('ernestdefoe-onair.stream', { id: s.id }) }, [
                 s.avatarUrl
                   ? m('img.OnAir-liveNow-avatar', { src: s.avatarUrl, alt: '' })
                   : m('span.OnAir-liveNow-avatar.OnAir-liveNow-avatar--ph', (s.displayName || s.username || '?').charAt(0).toUpperCase()),
-                m('.OnAir-liveNow-meta', [
-                  m('.OnAir-liveNow-who', s.displayName || s.username),
-                  s.title ? m('.OnAir-liveNow-what', s.title) : null,
-                ]),
+                m('.OnAir-liveNow-meta', [m('.OnAir-liveNow-who', s.displayName || s.username), s.title ? m('.OnAir-liveNow-what', s.title) : null]),
                 m('.OnAir-liveNow-views', [Icon.component({ name: 'fa-solid fa-eye' }), ' ', String(s.viewerCount || 0)]),
-              ]
+              ])
             )
           )
-        )
       ),
     ]);
   }

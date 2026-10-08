@@ -37,10 +37,7 @@ app.initializers.add('ernestdefoe-onair', () => {
     isLive(user) {
       if (!user) return false;
       const id = user.id && String(user.id());
-      return (
-        (id && this.liveUserIds.has(id)) ||
-        (typeof user.isLive === 'function' && !!user.isLive())
-      );
+      return (id && this.liveUserIds.has(id)) || (typeof user.isLive === 'function' && !!user.isLive());
     },
   };
 

@@ -33,23 +33,26 @@ export default class LiveDirectoryPage extends Page {
   view() {
     const canBroadcast = app.session.user && app.data.onairCanBroadcast;
 
-    return m('.OnAir-directory', m('.container', [
-      m('.OnAir-directory-head', [
-        m('h2.OnAir-directory-title', [
-          Icon.component({ name: 'fa-solid fa-tower-broadcast' }),
-          ' ',
-          app.translator.trans('onair.forum.directory.title'),
+    return m(
+      '.OnAir-directory',
+      m('.container', [
+        m('.OnAir-directory-head', [
+          m('h2.OnAir-directory-title', [
+            Icon.component({ name: 'fa-solid fa-tower-broadcast' }),
+            ' ',
+            app.translator.trans('onair.forum.directory.title'),
+          ]),
+          canBroadcast
+            ? m(
+                Button,
+                { className: 'Button Button--primary', icon: 'fa-solid fa-tower-broadcast', onclick: () => app.modal.show(GoLiveModal) },
+                app.translator.trans('onair.forum.go_live.button')
+              )
+            : null,
         ]),
-        canBroadcast
-          ? m(
-              Button,
-              { className: 'Button Button--primary', icon: 'fa-solid fa-tower-broadcast', onclick: () => app.modal.show(GoLiveModal) },
-              app.translator.trans('onair.forum.go_live.button')
-            )
-          : null,
-      ]),
-      this.content(),
-    ]));
+        this.content(),
+      ])
+    );
   }
 
   content() {

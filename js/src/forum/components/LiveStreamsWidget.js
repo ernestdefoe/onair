@@ -29,9 +29,7 @@ export default class LiveStreamsWidget extends Component {
     const streams = ((app.onair && app.onair.liveStreams) || []).slice(0, max);
 
     return m('.Bespoke-w.OnAir-bw', [
-      s.title
-        ? m('h4', [s.title, streams.length ? m('span.OnAir-bw-count', streams.length) : null])
-        : null,
+      s.title ? m('h4', [s.title, streams.length ? m('span.OnAir-bw-count', streams.length) : null]) : null,
       !streams.length
         ? m('p.Bespoke-w-empty', t('empty'))
         : m(
@@ -58,10 +56,7 @@ export default class LiveStreamsWidget extends Component {
         st.avatarUrl
           ? m('img.OnAir-bw-avatar', { src: st.avatarUrl, alt: '' })
           : m('span.OnAir-bw-avatar.OnAir-bw-avatar--ph', (st.displayName || st.username || '?').charAt(0).toUpperCase()),
-        m('.OnAir-bw-meta', [
-          m('.OnAir-bw-who', st.displayName || st.username),
-          st.title ? m('.OnAir-bw-what', st.title) : null,
-        ]),
+        m('.OnAir-bw-meta', [m('.OnAir-bw-who', st.displayName || st.username), st.title ? m('.OnAir-bw-what', st.title) : null]),
         m('.OnAir-bw-views', [Icon.component({ name: 'fa-solid fa-eye' }), ' ', String(st.viewerCount || 0)]),
       ]),
     ]);
