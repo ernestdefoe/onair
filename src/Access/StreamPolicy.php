@@ -12,7 +12,7 @@ class StreamPolicy extends AbstractPolicy
      * A member may edit/end their own stream. (Admins are allowed globally by
      * core's gate, and forum moderators with the manage permission below.)
      */
-    public function edit(User $actor, Stream $stream)
+    public function edit(User $actor, Stream $stream): ?string
     {
         if ($actor->id === (int) $stream->user_id) {
             return $this->allow();
@@ -21,5 +21,7 @@ class StreamPolicy extends AbstractPolicy
         if ($actor->hasPermission('onair.manage')) {
             return $this->allow();
         }
+
+        return null;
     }
 }

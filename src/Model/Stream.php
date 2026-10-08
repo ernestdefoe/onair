@@ -6,6 +6,7 @@ use Flarum\Database\AbstractModel;
 use Flarum\Discussion\Discussion;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -39,12 +40,14 @@ class Stream extends AbstractModel
         'ended_at'     => 'datetime',
     ];
 
-    public function user()
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function discussion()
+    /** @return BelongsTo<Discussion, $this> */
+    public function discussion(): BelongsTo
     {
         return $this->belongsTo(Discussion::class, 'discussion_id');
     }

@@ -51,7 +51,7 @@ return [
             // user (see LiveUsers). A loaded relation is used as-is.
             Schema\Boolean::make('isLive')
                 ->get(fn (User $user, Context $context) => $user->relationLoaded('liveStream')
-                    ? (bool) $user->liveStream
+                    ? (bool) $user->getRelation('liveStream')
                     : LiveUsers::has($context, (int) $user->id)),
 
             // Only when asked for with ?include=. A to-one relation carries

@@ -28,12 +28,15 @@ final class LiveUsers
         $request = $context->request;
 
         if (! isset(self::$byRequest[$request])) {
-            self::$byRequest[$request] = Stream::query()
-                ->where('status', Stream::STATUS_LIVE)
-                ->distinct()
-                ->pluck('user_id')
-                ->mapWithKeys(fn ($id) => [(int) $id => true])
-                ->all();
+            self::$byRequest[$request] = array_fill_keys(
+                Stream::query()
+                    ->where('status', Stream::STATUS_LIVE)
+                    ->distinct()
+                    ->pluck('user_id')
+                    ->map(fn ($id) => (int) $id)
+                    ->all(),
+                true
+            );
         }
 
         return isset(self::$byRequest[$request][$userId]);
