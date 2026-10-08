@@ -6,5 +6,7 @@ use Ernestdefoe\OnAir\Model\Stream;
 
 class StreamStarted
 {
-    public function __construct(public Stream $stream) {}
+    public function __construct(public Stream $stream)
+    {
+    }
 }

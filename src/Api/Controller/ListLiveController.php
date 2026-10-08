@@ -34,19 +34,19 @@ class ListLiveController implements RequestHandlerInterface
             $user = $s->user;
 
             return [
-                'id'          => (int) $s->id,
-                'userId'      => (int) $s->user_id,
-                'username'    => $user?->username,
+                'id' => (int) $s->id,
+                'userId' => (int) $s->user_id,
+                'username' => $user?->username,
                 'displayName' => $user?->display_name,
-                'avatarUrl'   => $user?->avatar_url,
-                'provider'    => $s->provider,
-                'title'       => $s->title,
+                'avatarUrl' => $user?->avatar_url,
+                'provider' => $s->provider,
+                'title' => $s->title,
                 // Public embed target (YouTube /embed/…, Twitch player URL, or
                 // the HLS .m3u8 for rtmp). Lets widgets render inline previews
                 // without a per-stream resource fetch.
-                'embedUrl'    => $s->embed_url,
+                'embedUrl' => $s->embed_url,
                 'viewerCount' => (int) $s->viewer_count,
-                'startedAt'   => optional($s->started_at)->toIso8601String(),
+                'startedAt' => optional($s->started_at)->toIso8601String(),
             ];
         })->filter(fn ($row) => $row['username'] !== null)->values();
 

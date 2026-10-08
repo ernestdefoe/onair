@@ -10,7 +10,7 @@ class StreamPolicy extends AbstractPolicy
 {
     /**
      * A member may edit/end their own stream. (Admins are allowed globally by
-     * core's gate, and forum moderators with the manage permission below.)
+     * core's gate, and forum moderators with the manage permission below.).
      */
     public function edit(User $actor, Stream $stream): ?string
     {

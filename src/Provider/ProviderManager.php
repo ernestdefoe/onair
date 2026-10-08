@@ -68,6 +68,7 @@ class ProviderManager
 
         if (! $provider) {
             $key = 'onair.lib.errors.no_provider';
+
             throw new ValidationException([
                 'channel_url' => $this->translator ? $this->translator->trans($key) : $key,
             ]);

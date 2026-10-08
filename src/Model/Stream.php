@@ -36,8 +36,8 @@ class Stream extends AbstractModel
 
     protected $casts = [
         'viewer_count' => 'integer',
-        'started_at'   => 'datetime',
-        'ended_at'     => 'datetime',
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
     ];
 
     /** @return BelongsTo<User, $this> */

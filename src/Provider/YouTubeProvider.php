@@ -45,7 +45,7 @@ class YouTubeProvider implements StreamProvider
 
         return [
             'external_id' => $videoId ?? $channel,
-            'embed_url'   => $embed,
+            'embed_url' => $embed,
             'channel_url' => $url,
         ];
     }

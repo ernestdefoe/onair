@@ -22,7 +22,8 @@ class StreamResource extends AbstractDatabaseResource
         protected ProviderManager $providers,
         protected SettingsRepositoryInterface $settings,
         protected TranslatorInterface $translator,
-    ) {}
+    ) {
+    }
 
     public function type(): string
     {
@@ -119,6 +120,7 @@ class StreamResource extends AbstractDatabaseResource
                     // unauthorized reference.
                     if (! $value) {
                         $s->discussion_id = null;
+
                         return;
                     }
                     $id = (int) $value;
@@ -167,13 +169,13 @@ class StreamResource extends AbstractDatabaseResource
             ->where('status', Stream::STATUS_LIVE)
             ->update(['status' => Stream::STATUS_ENDED, 'ended_at' => Carbon::now()]);
 
-        $model->user_id     = $actor->id;
-        $model->provider    = $resolved['provider'];
+        $model->user_id = $actor->id;
+        $model->provider = $resolved['provider'];
         $model->external_id = $resolved['external_id'];
-        $model->embed_url   = $resolved['embed_url'];
+        $model->embed_url = $resolved['embed_url'];
         $model->channel_url = $resolved['channel_url'];
-        $model->status      = Stream::STATUS_LIVE;
-        $model->started_at  = Carbon::now();
+        $model->status = Stream::STATUS_LIVE;
+        $model->started_at = Carbon::now();
 
         return null;
     }

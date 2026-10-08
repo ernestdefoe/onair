@@ -1,8 +1,8 @@
 <?php
 
+use Ernestdefoe\OnAir\Access\StreamPolicy;
 use Ernestdefoe\OnAir\Api\Controller\ListLiveController;
 use Ernestdefoe\OnAir\Api\Resource\StreamResource;
-use Ernestdefoe\OnAir\Access\StreamPolicy;
 use Ernestdefoe\OnAir\Console\HourlySchedule;
 use Ernestdefoe\OnAir\Console\ReapStaleStreamsCommand;
 use Ernestdefoe\OnAir\Event\StreamEnded;
@@ -22,8 +22,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 return [
     (new Extend\Frontend('forum'))
-        ->js(__DIR__ . '/js/dist/forum.js')
-        ->css(__DIR__ . '/less/forum.less')
+        ->js(__DIR__.'/js/dist/forum.js')
+        ->css(__DIR__.'/less/forum.less')
         ->route('/onair', 'ernestdefoe-onair.index')
         ->route('/onair/{id}', 'ernestdefoe-onair.stream')
         ->content(function (Document $document, ServerRequestInterface $request) {
@@ -32,10 +32,10 @@ return [
         }),
 
     (new Extend\Frontend('admin'))
-        ->js(__DIR__ . '/js/dist/admin.js')
-        ->css(__DIR__ . '/less/admin.less'),
+        ->js(__DIR__.'/js/dist/admin.js')
+        ->css(__DIR__.'/less/admin.less'),
 
-    new Extend\Locales(__DIR__ . '/locale'),
+    new Extend\Locales(__DIR__.'/locale'),
 
     (new Extend\Routes('api'))
         ->get('/onair/live', 'onair.live', ListLiveController::class),

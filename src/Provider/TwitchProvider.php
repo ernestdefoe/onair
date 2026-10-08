@@ -33,16 +33,16 @@ class TwitchProvider implements StreamProvider
         $embed = null;
 
         if (preg_match('~twitch\.tv/videos/(\d+)~', $url, $m)) {
-            $externalId = 'v' . $m[1];
-            $embed = 'https://player.twitch.tv/?video=' . $m[1];
+            $externalId = 'v'.$m[1];
+            $embed = 'https://player.twitch.tv/?video='.$m[1];
         } elseif (preg_match('~twitch\.tv/([A-Za-z0-9_]{3,30})~', $url, $m)) {
             $externalId = $m[1];
-            $embed = 'https://player.twitch.tv/?channel=' . $m[1];
+            $embed = 'https://player.twitch.tv/?channel='.$m[1];
         }
 
         return [
             'external_id' => $externalId,
-            'embed_url'   => $embed,
+            'embed_url' => $embed,
             'channel_url' => $url,
         ];
     }
