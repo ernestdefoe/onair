@@ -3,3 +3,5 @@ js/dist/*.map
 vendor/
 /.claude/
 composer.lock
+.phpunit.result.cache
+/tests/integration/tmp
