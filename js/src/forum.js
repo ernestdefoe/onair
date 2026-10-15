@@ -1,4 +1,5 @@
 import app from 'flarum/forum/app';
+import extractText from 'flarum/common/utils/extractText';
 import { extend } from 'flarum/common/extend';
 import Model from 'flarum/common/Model';
 import User from 'flarum/common/models/User';
@@ -95,7 +96,15 @@ app.initializers.add('ernestdefoe-onair', () => {
     icon: '📺',
     zones: ['above-list', 'sidebar', 'below-list', 'footer'],
     schema: [
-      { key: 'title', type: 'text', label: 'onair.forum.widget.title_label', default: 'Live streams' },
+      {
+        key: 'title',
+        type: 'text',
+        label: 'onair.forum.widget.title_label',
+        // A getter, so the default title follows the forum's language when it renders.
+        get default() {
+          return extractText(app.translator.trans('onair.forum.widget.name'));
+        },
+      },
       { key: 'count', type: 'number', label: 'onair.forum.widget.count_label', default: 4 },
       { key: 'preview', type: 'toggle', label: 'onair.forum.widget.preview_label', default: true },
     ],
