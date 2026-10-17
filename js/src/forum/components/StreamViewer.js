@@ -30,6 +30,9 @@ export default class StreamViewer extends Component {
         src,
         allow: 'autoplay; fullscreen; encrypted-media; picture-in-picture',
         allowfullscreen: true,
+        // Flarum sends Referrer-Policy: same-origin, so without this YouTube gets
+        // no Referer and refuses to play (its "Error 153").
+        referrerpolicy: 'strict-origin-when-cross-origin',
         frameborder: '0',
         scrolling: 'no',
       }),

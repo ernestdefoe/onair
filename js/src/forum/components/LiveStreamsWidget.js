@@ -95,6 +95,9 @@ export default class LiveStreamsWidget extends Component {
     return m('iframe.OnAir-bw-frame', {
       src,
       allow: 'autoplay; encrypted-media; picture-in-picture',
+      // Flarum sends Referrer-Policy: same-origin, so without this YouTube gets
+      // no Referer and refuses to play (its "Error 153").
+      referrerpolicy: 'strict-origin-when-cross-origin',
       frameborder: '0',
       scrolling: 'no',
       tabindex: -1,
