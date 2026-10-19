@@ -39,6 +39,25 @@
   z-index: 2;
 }
 
+// Core renders a post's avatar twice, in the side column and in the header,
+// and hides one of them per width. The badge is outside the avatar, so it
+// stayed where the hidden one was: on top of the username. Hide the wrap with
+// the avatar it holds, on the same breakpoints core uses.
+@media @tablet-up {
+  .Post-header .OnAir-avatarWrap:has(> .Post-avatar) {
+    display: none;
+  }
+}
+@media @phone {
+  .Post-side .OnAir-avatarWrap:has(> .Post-avatar),
+  .CommentPost.editing .Post-header .OnAir-avatarWrap:has(> .Post-avatar) {
+    display: none;
+  }
+  .CommentPost.editing .Post-side .OnAir-avatarWrap:has(> .Post-avatar) {
+    display: inline-block;
+  }
+}
+
 @keyframes onair-ring {
   0% { opacity: 1; transform: scale(1); }
   70% { opacity: 0; transform: scale(1.18); }
