@@ -3,6 +3,7 @@
 namespace Ernestdefoe\OnAir\Tests\integration\api;
 
 use Carbon\Carbon;
+use Ernestdefoe\OnAir\Model\Stream;
 use Flarum\Discussion\Discussion;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
@@ -72,6 +73,32 @@ class StreamsTest extends TestCase
         }
 
         $this->assertSame(1, $this->database()->table('onair_streams')->where('user_id', 2)->where('status', 'live')->count(), 'Going live again ends the stream before');
+    }
+
+    #[Test]
+    public function a_failed_go_live_leaves_the_current_stream_live()
+    {
+        $this->app();
+        Stream::creating(function () {
+            throw new \RuntimeException('insert failed');
+        });
+
+        [$status] = $this->api('POST', '/api/onair-streams', 3, ['channelUrl' => 'https://twitch.tv/streamer']);
+
+        $this->assertSame(500, $status);
+        $this->assertSame('live', $this->database()->table('onair_streams')->where('id', 1)->value('status'), 'Ending the old stream rolls back with the failed insert');
+    }
+
+    #[Test]
+    public function deleting_a_discussion_unlinks_its_streams()
+    {
+        $this->app();
+        $this->database()->table('onair_streams')->where('id', 1)->update(['discussion_id' => 1]);
+
+        Discussion::find(1)->delete();
+
+        $this->assertNull($this->database()->table('onair_streams')->where('id', 1)->value('discussion_id'));
+        $this->assertSame('live', $this->database()->table('onair_streams')->where('id', 1)->value('status'), 'The stream itself stays');
     }
 
     #[Test]

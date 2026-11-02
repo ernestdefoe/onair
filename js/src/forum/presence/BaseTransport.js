@@ -21,7 +21,9 @@ export default class BaseTransport {
       .request({ method: 'GET', url: app.forum.attribute('apiUrl') + '/onair/live' })
       .then((res) => this.apply((res && res.data) || []))
       .catch(() => {
-        /* transient network error — keep last known state */
+        // app.request has already shown the error alert (401, 500, network)
+        // and logged it; this only stops an unhandled rejection. Keep the
+        // last known list rather than blanking every LIVE badge.
       });
   }
 

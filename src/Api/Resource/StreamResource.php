@@ -14,8 +14,12 @@ use Flarum\Foundation\ValidationException;
 use Flarum\Locale\TranslatorInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Tobyz\JsonApiServer\Context as BaseContext;
 
+/**
+ * @extends AbstractDatabaseResource<Stream>
+ */
 class StreamResource extends AbstractDatabaseResource
 {
     public function __construct(
@@ -164,11 +168,6 @@ class StreamResource extends AbstractDatabaseResource
         // Resolve provider + embed details (throws if unrecognised).
         $resolved = $this->providers->normalize($url);
 
-        // One active stream per user (Lite). End any existing live stream first.
-        Stream::where('user_id', $actor->id)
-            ->where('status', Stream::STATUS_LIVE)
-            ->update(['status' => Stream::STATUS_ENDED, 'ended_at' => Carbon::now()]);
-
         $model->user_id = $actor->id;
         $model->provider = $resolved['provider'];
         $model->external_id = $resolved['external_id'];
@@ -178,5 +177,29 @@ class StreamResource extends AbstractDatabaseResource
         $model->started_at = Carbon::now();
 
         return null;
+    }
+
+    /**
+     * One active stream per user (Lite): going live ends the previous live
+     * stream. Both writes share a transaction, so a failed insert never leaves
+     * the member with their old stream ended and no new one.
+     *
+     * @param Stream $model
+     */
+    protected function saveModel(Model $model, BaseContext $context): void
+    {
+        if ($model->exists) {
+            $model->save();
+
+            return;
+        }
+
+        $model->getConnection()->transaction(function () use ($model) {
+            Stream::where('user_id', $model->user_id)
+                ->where('status', Stream::STATUS_LIVE)
+                ->update(['status' => Stream::STATUS_ENDED, 'ended_at' => Carbon::now()]);
+
+            $model->save();
+        });
     }
 }

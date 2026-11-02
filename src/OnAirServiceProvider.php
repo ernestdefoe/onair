@@ -33,8 +33,10 @@ class OnAirServiceProvider extends AbstractServiceProvider
         // (and Pro) can subscribe to. The dispatcher is injected rather than
         // reached for via the event() global helper.
         Stream::created(function (Stream $stream) use ($events) {
+            // After commit: going live saves inside a transaction, and a queued
+            // realtime push must be able to read the new row.
             if ($stream->isLive()) {
-                $events->dispatch(new StreamStarted($stream));
+                $stream->getConnection()->afterCommit(fn () => $events->dispatch(new StreamStarted($stream)));
             }
         });
 

@@ -111,15 +111,9 @@ app.initializers.add('ernestdefoe-onair', () => {
     component: LiveStreamsWidget,
   });
 
-  // Start presence AFTER boot. `app.forum` is only populated once boot
-  // finishes, so starting synchronously inside the initializer throws
-  // ("undefined is not an object (evaluating 'app.forum.attribute')").
-  const startPresence = () => {
-    if (!app.forum) {
-      setTimeout(startPresence, 0);
-      return;
-    }
+  // Start presence once boot has loaded the forum payload (`app.forum`):
+  // core runs beforeMount callbacks after that, just before mounting.
+  app.beforeMount(() => {
     app.onair.presence = setupPresence();
-  };
-  setTimeout(startPresence, 0);
+  });
 });
