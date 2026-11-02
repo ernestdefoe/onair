@@ -93,6 +93,14 @@ class StreamsTest extends TestCase
     public function deleting_a_discussion_unlinks_its_streams()
     {
         $this->app();
+
+        // The test harness turns SQLite's foreign keys off before each test's
+        // transaction and can't turn them back on inside it; a real SQLite
+        // forum runs with them on (foreign_key_constraints in config.php).
+        if ($this->database()->getDriverName() === 'sqlite') {
+            $this->markTestSkipped('Foreign keys are off in SQLite integration tests.');
+        }
+
         $this->database()->table('onair_streams')->where('id', 1)->update(['discussion_id' => 1]);
 
         Discussion::find(1)->delete();
